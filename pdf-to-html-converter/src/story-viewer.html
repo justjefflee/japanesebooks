@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Japanese Story Viewer</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      background: #f5f5f5;
+    }
+    .header {
+      background: white;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header h1 {
+      color: #333;
+      margin-bottom: 15px;
+    }
+    .book-selector {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .book-selector label {
+      font-weight: bold;
+    }
+    .book-selector select {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      min-width: 200px;
+    }
+    .content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .book-info {
+      background: white;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .book-info h2 {
+      color: #333;
+      margin-bottom: 10px;
+    }
+    .book-info .meta {
+      color: #666;
+      font-size: 14px;
+    }
+    .page {
+      background: white;
+      margin: 20px 0;
+      padding: 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      position: relative;
+      font-size: 18px;
+    }
+    .page-content {
+      display: flex;
+      gap: 30px;
+      align-items: flex-start;
+    }
+    .page-image-container {
+      flex: 0 0 55%;
+      position: sticky;
+      top: 80px;
+    }
+    .page-number-header {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+    .page-image {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .text-container {
+      flex: 0 0 45%;
+      min-width: 0;
+    }
+    .text-content {
+      margin: 10px 0;
+    }
+    .text-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 4px 0;
+      padding: 6px 8px;
+      min-height: 32px;
+      transition: background 0.2s;
+      border-radius: 4px;
+    }
+    .text-line:hover {
+      background: #f8f9fa;
+    }
+    .text-line-content {
+      flex: 1;
+      word-wrap: break-word;
+      line-height: 1.6;
+    }
+    .japanese-text {
+      font-size: 16px;
+      color: #1a1a1a;
+      margin-bottom: 2px;
+    }
+    .english-translation {
+      font-size: 13px;
+      color: #666;
+      font-style: italic;
+      margin-top: 2px;
+      line-height: 1.4;
+    }
+    .speaker-btn {
+      background: #667eea;
+      border: none;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    .speaker-btn.slow {
+      background: #f59e0b;
+    }
+    .speaker-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+    .speaker-btn:hover {
+      background: #5568d3;
+      transform: scale(1.1);
+    }
+    .speaker-btn.slow:hover {
+      background: #d97706;
+    }
+    .speaker-btn:active {
+      transform: scale(0.95);
+    }
+    .speaker-btn.speaking {
+      background: #28a745;
+      animation: pulse 1s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+    }
+    .error {
+      background: #fee;
+      border: 1px solid #fcc;
+      padding: 20px;
+      border-radius: 8px;
+      color: #c00;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Japanese Story Viewer</h1>
+    <div class="book-selector">
+      <label for="bookSelect">Select Story:</label>
+      <select id="bookSelect" onchange="loadBook()">
+        <option value="">-- Choose a story --</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="content">
+    <div id="loading" class="loading">Loading stories...</div>
+    <div id="error" class="error" style="display:none;"></div>
+    <div id="bookContent"></div>
+  </div>
+
+  <script>
+    let currentUtterance = null;
+    let speechSynthesis = window.speechSynthesis;
+    let booksData = [];
+
+    function speakText(text, button, rate = 0.9) {
+      // Stop any ongoing speech
+      if (currentUtterance) {
+        speechSynthesis.cancel();
+        document.querySelectorAll('.speaker-btn').forEach(btn => {
+          btn.classList.remove('speaking');
+        });
+      }
+
+      // Create new utterance
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'ja-JP';
+      utterance.rate = rate;
+
+      // Add speaking class
+      button.classList.add('speaking');
+
+      // Remove speaking class when done
+      utterance.onend = () => {
+        button.classList.remove('speaking');
+        currentUtterance = null;
+      };
+
+      utterance.onerror = () => {
+        button.classList.remove('speaking');
+        currentUtterance = null;
+      };
+
+      currentUtterance = utterance;
+      speechSynthesis.speak(utterance);
+    }
+
+    function stopSpeaking() {
+      if (currentUtterance) {
+        speechSynthesis.cancel();
+        document.querySelectorAll('.speaker-btn').forEach(btn => {
+          btn.classList.remove('speaking');
+        });
+        currentUtterance = null;
+      }
+    }
+
+    async function loadMetadata() {
+      try {
+        const response = await fetch('/converted/metadata.json');
+        if (!response.ok) throw new Error('Failed to load metadata');
+
+        booksData = await response.json();
+
+        const bookSelect = document.getElementById('bookSelect');
+        booksData.forEach((book, index) => {
+          const option = document.createElement('option');
+          option.value = index;
+          option.textContent = book.title || book.originalFileName || `Book ${index + 1}`;
+          bookSelect.appendChild(option);
+        });
+
+        document.getElementById('loading').style.display = 'none';
+
+        // Load first book if available
+        if (booksData.length > 0) {
+          bookSelect.value = 0;
+          loadBook();
+        }
+      } catch (error) {
+        document.getElementById('loading').style.display = 'none';
+        showError('Failed to load metadata: ' + error.message);
+      }
+    }
+
+    function loadBook() {
+      const bookSelect = document.getElementById('bookSelect');
+      const bookIndex = parseInt(bookSelect.value);
+
+      if (isNaN(bookIndex) || bookIndex < 0) {
+        document.getElementById('bookContent').innerHTML = '';
+        return;
+      }
+
+      const book = booksData[bookIndex];
+      if (!book) return;
+
+      stopSpeaking();
+      renderBook(book);
+    }
+
+    function renderBook(book) {
+      const bookContent = document.getElementById('bookContent');
+
+      let html = `
+        <div class="book-info">
+          <h2>${book.title || book.originalFileName || 'Untitled'}</h2>
+          <div class="meta">
+            ${book.pageCount ? `Pages: ${book.pageCount} | ` : ''}
+            ${book.convertedAt ? `Converted: ${new Date(book.convertedAt).toLocaleDateString()}` : ''}
+          </div>
+        </div>
+      `;
+
+      if (book.pages && book.pages.length > 0) {
+        book.pages.forEach(page => {
+          html += `
+            <div class="page">
+              <div class="page-content">
+                <div class="page-image-container">
+                  <div class="page-number-header">Page ${page.pageNumber}</div>
+                  <img class="page-image" src="${page.imageData}" alt="Page ${page.pageNumber}" />
+                </div>
+                <div class="text-container">
+                  <div class="text-content">
+          `;
+
+          if (page.textLines && page.textLines.length > 0) {
+            page.textLines.forEach(line => {
+              const escapedText = line.japanese.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+              const showTranslation = line.english && line.english.trim() !== line.japanese.trim();
+
+              html += `
+                <div class="text-line">
+                  <div class="text-line-content">
+                    <div class="japanese-text">${line.japanese}</div>
+                    ${showTranslation ? `<div class="english-translation">${line.english}</div>` : ''}
+                  </div>
+                  <button class="speaker-btn" onclick="speakText('${escapedText}', this, 0.9)" title="Speak at normal speed">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                      <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+                      <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                      <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+                    </svg>
+                  </button>
+                  <button class="speaker-btn slow" onclick="speakText('${escapedText}', this, 0.6)" title="Speak slowly">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                      <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+                      <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                    </svg>
+                  </button>
+                </div>
+              `;
+            });
+          }
+
+          html += `
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+      }
+
+      bookContent.innerHTML = html;
+    }
+
+    function showError(message) {
+      const errorDiv = document.getElementById('error');
+      errorDiv.textContent = message;
+      errorDiv.style.display = 'block';
+    }
+
+    // Load metadata on page load
+    loadMetadata();
+  </script>
+</body>
+</html>
