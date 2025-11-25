@@ -76,6 +76,9 @@
       gap: 30px;
       align-items: flex-start;
     }
+    .page-content.text-only {
+      justify-content: center;
+    }
     .page-image-container {
       flex: 0 0 55%;
       position: sticky;
@@ -98,6 +101,10 @@
     .text-container {
       flex: 0 0 45%;
       min-width: 0;
+    }
+    .text-container.full-width {
+      flex: 0 0 100%;
+      max-width: 800px;
     }
     .text-content {
       margin: 10px 0;
@@ -308,14 +315,35 @@
 
       if (book.pages && book.pages.length > 0) {
         book.pages.forEach(page => {
+          const hasImage = page.imageData && page.imageData !== 'null';
+          const contentClass = hasImage ? 'page-content' : 'page-content text-only';
+          const textContainerClass = hasImage ? 'text-container' : 'text-container full-width';
+
           html += `
             <div class="page">
-              <div class="page-content">
+              <div class="${contentClass}">
+          `;
+
+          if (hasImage) {
+            html += `
                 <div class="page-image-container">
                   <div class="page-number-header">Page ${page.pageNumber}</div>
                   <img class="page-image" src="${page.imageData}" alt="Page ${page.pageNumber}" />
                 </div>
-                <div class="text-container">
+            `;
+          }
+
+          html += `
+                <div class="${textContainerClass}">
+          `;
+
+          if (!hasImage && book.pageCount === 1) {
+            html += `<div class="page-number-header">${book.title || 'Text File'}</div>`;
+          } else if (!hasImage) {
+            html += `<div class="page-number-header">Page ${page.pageNumber}</div>`;
+          }
+
+          html += `
                   <div class="text-content">
           `;
 

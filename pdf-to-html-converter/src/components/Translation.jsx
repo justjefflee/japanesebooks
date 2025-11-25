@@ -24,8 +24,8 @@ function Translation({ onNavigateToLibrary }) {
   const processText = async (text) => {
     setLoading(true);
 
-    // Split by Japanese punctuation, similar to PDF converter logic
-    const parts = text.split(/([、。])/);
+    // Split by Japanese punctuation and line breaks
+    const parts = text.split(/([、。\r\n])/);
     const tempSentences = [];
     let currentSentence = '';
 
@@ -34,6 +34,12 @@ function Translation({ onNavigateToLibrary }) {
       if (part === '、' || part === '。') {
         currentSentence += part;
         if (part === '。' && currentSentence.trim()) {
+          tempSentences.push(currentSentence.trim());
+          currentSentence = '';
+        }
+      } else if (part === '\n' || part === '\r\n' || part === '\r') {
+        // Treat line breaks as sentence boundaries
+        if (currentSentence.trim()) {
           tempSentences.push(currentSentence.trim());
           currentSentence = '';
         }

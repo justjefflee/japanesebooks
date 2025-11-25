@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
-import { convertPdfToHtml } from './utils/pdfConverter';
+import { convertPdfToHtml, convertTxtToHtml } from './utils/pdfConverter';
 import { saveHtmlToServer, checkServerHealth, saveBookData } from './utils/fileApi';
 import Library from './components/Library';
 import Translation from './components/Translation';
@@ -38,7 +38,7 @@ function App() {
     setDragActive(false);
 
     const droppedFiles = Array.from(e.dataTransfer.files).filter(
-      file => file.type === 'application/pdf'
+      file => file.type === 'application/pdf' || file.type === 'text/plain' || file.name.endsWith('.txt')
     );
 
     if (droppedFiles.length > 0) {
@@ -64,7 +64,10 @@ function App() {
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      const result = await convertPdfToHtml(file);
+      // Detect file type and use appropriate converter
+      const result = file.name.endsWith('.txt')
+        ? await convertTxtToHtml(file)
+        : await convertPdfToHtml(file);
       newResults.push(result);
       setResults([...newResults]);
 
@@ -174,8 +177,8 @@ function App() {
       <header className="header">
         <div className="header-content">
           <div className="header-text">
-            <h1>📄 PDF to HTML Converter</h1>
-            <p>Convert your PDF files to HTML with text and images preserved</p>
+            <h1>📄 PDF & TXT Converter</h1>
+            <p>Convert your PDF and TXT files with automatic translation</p>
           </div>
           <button className="library-btn" onClick={() => setCurrentView('library')}>
             ← Back to Library
@@ -199,12 +202,12 @@ function App() {
                 <polyline points="17 8 12 3 7 8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 <line x1="12" y1="3" x2="12" y2="15" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-              <p className="drop-zone-title">Drag & drop PDF files here</p>
+              <p className="drop-zone-title">Drag & drop PDF or TXT files here</p>
               <p className="drop-zone-subtitle">or click to browse</p>
               <input
                 id="fileInput"
                 type="file"
-                accept=".pdf"
+                accept=".pdf,.txt"
                 multiple
                 onChange={handleFileInput}
                 style={{ display: 'none' }}

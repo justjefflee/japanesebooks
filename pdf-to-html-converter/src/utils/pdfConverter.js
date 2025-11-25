@@ -23,6 +23,60 @@ export async function translateText(text, sourceLang = 'ja', targetLang = 'en') 
   }
 }
 
+export async function convertTxtToHtml(file) {
+  try {
+    const text = await file.text();
+
+    // Split text by line breaks
+    const lines = text.split(/\r?\n/);
+
+    // Filter out empty lines and translate each line
+    const translatedLines = [];
+    for (const line of lines) {
+      const trimmedLine = line.trim();
+      if (trimmedLine) {
+        const translation = await translateText(trimmedLine);
+        translatedLines.push({
+          japanese: trimmedLine,
+          english: translation
+        });
+      }
+    }
+
+    // Create a single "page" with all text lines
+    const pages = [{
+      pageNumber: 1,
+      imageData: null, // No image for text files
+      textLines: translatedLines
+    }];
+
+    // Generate unique ID
+    const id = Date.now().toString() + Math.random().toString(36).substring(2, 15);
+
+    return {
+      success: true,
+      data: {
+        id: id,
+        title: file.name.replace('.txt', ''),
+        originalFileName: file.name,
+        pageCount: 1,
+        fileSize: file.size,
+        convertedAt: new Date().toISOString(),
+        tags: [],
+        notes: '',
+        savedToServer: false,
+        pages: pages
+      }
+    };
+  } catch (error) {
+    console.error('Error converting TXT:', error);
+    return {
+      success: false,
+      error: error.message
+    };
+  }
+}
+
 export async function convertPdfToHtml(file) {
   try {
     const arrayBuffer = await file.arrayBuffer();
