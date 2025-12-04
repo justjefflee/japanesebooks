@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { translateText } from '../utils/pdfConverter';
+import { translateText, generateFurigana } from '../utils/pdfConverter';
 import './Translation.css';
 
 function Translation({ onNavigateToLibrary }) {
@@ -53,14 +53,17 @@ function Translation({ onNavigateToLibrary }) {
       tempSentences.push(currentSentence.trim());
     }
 
-    // Translate all sentences
+    // Translate all sentences and generate furigana
     const translatedSentences = [];
     for (const sentence of tempSentences) {
       if (sentence) {
-        const translation = await translateText(sentence);
+        const result = await translateText(sentence);
+        const furigana = await generateFurigana(sentence);
         translatedSentences.push({
           japanese: sentence,
-          english: translation
+          furigana: furigana,
+          romanization: result.romanization,
+          chinese: result.translation
         });
       }
     }
@@ -69,7 +72,7 @@ function Translation({ onNavigateToLibrary }) {
     setLoading(false);
   };
 
-  const speakText = (text, rate = 0.9, buttonElement) => {
+  const speakText = (text, lang = 'ja-JP', rate = 0.9, buttonElement) => {
     // Stop any ongoing speech
     if (currentUtterance) {
       window.speechSynthesis.cancel();
@@ -80,7 +83,7 @@ function Translation({ onNavigateToLibrary }) {
 
     // Create new utterance
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'ja-JP';
+    utterance.lang = lang;
     utterance.rate = rate;
 
     // Add speaking class
@@ -155,33 +158,49 @@ function Translation({ onNavigateToLibrary }) {
               {sentences.map((sentence, index) => (
                 <div key={index} className="text-line">
                   <div className="text-line-content">
-                    <div className="japanese-text">{sentence.japanese}</div>
-                    {sentence.english && sentence.english !== sentence.japanese && (
-                      <div className="english-translation">{sentence.english}</div>
+                    <div className="text-row">
+                      <div className="japanese-text">{sentence.japanese}</div>
+                      <div className="language-actions">
+                        <button
+                          className="speaker-btn"
+                          onClick={(e) => speakText(sentence.japanese, 'ja-JP', 0.9, e.currentTarget)}
+                          title="Speak Japanese at normal speed"
+                        >
+                          🇯🇵
+                        </button>
+                        <button
+                          className="speaker-btn slow"
+                          onClick={(e) => speakText(sentence.japanese, 'ja-JP', 0.6, e.currentTarget)}
+                          title="Speak Japanese slowly"
+                        >
+                          🇯🇵 🐢
+                        </button>
+                      </div>
+                    </div>
+                    {sentence.romanization && (
+                      <div className="romanization-text">{sentence.romanization}</div>
                     )}
-                  </div>
-                  <div className="text-line-actions">
-                    <button
-                      className="speaker-btn"
-                      onClick={(e) => speakText(sentence.japanese, 0.9, e.currentTarget)}
-                      title="Speak at normal speed"
-                    >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                        <path d="M11 5L6 9H2v6h4l5 4V5z"/>
-                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
-                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
-                      </svg>
-                    </button>
-                    <button
-                      className="speaker-btn slow"
-                      onClick={(e) => speakText(sentence.japanese, 0.6, e.currentTarget)}
-                      title="Speak slowly"
-                    >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                        <path d="M11 5L6 9H2v6h4l5 4V5z"/>
-                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
-                      </svg>
-                    </button>
+                    {sentence.chinese && sentence.chinese !== sentence.japanese && (
+                      <div className="text-row">
+                        <div className="chinese-translation">{sentence.chinese}</div>
+                        <div className="language-actions">
+                          <button
+                            className="speaker-btn chinese"
+                            onClick={(e) => speakText(sentence.chinese, 'zh-TW', 0.9, e.currentTarget)}
+                            title="Speak Chinese at normal speed"
+                          >
+                            🇹🇼
+                          </button>
+                          <button
+                            className="speaker-btn slow chinese"
+                            onClick={(e) => speakText(sentence.chinese, 'zh-TW', 0.6, e.currentTarget)}
+                            title="Speak Chinese slowly"
+                          >
+                            🇹🇼 🐢
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}

@@ -7,20 +7,55 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
 ).toString();
 
 // Translation function using Google Translate
-export async function translateText(text, sourceLang = 'ja', targetLang = 'en') {
+// Returns both translation and romanization
+export async function translateText(text, sourceLang = 'ja', targetLang = 'zh-TW') {
   try {
-    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
-    const response = await fetch(url);
-    const data = await response.json();
+    const result = {
+      translation: text,
+      romanization: ''
+    };
 
-    if (data && data[0] && data[0][0] && data[0][0][0]) {
-      return data[0][0][0];
+    // Get Chinese translation
+    const translationUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
+    const translationResponse = await fetch(translationUrl);
+    const translationData = await translationResponse.json();
+    console.log('Translation API response:', translationData);
+
+    if (translationData && translationData[0] && translationData[0][0] && translationData[0][0][0]) {
+      result.translation = translationData[0][0][0];
     }
-    return text;
+
+    // Get romanization by translating to English (which returns romaji in data[3])
+    const romajiUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=ja&tl=en&dt=t&dt=rm&q=${encodeURIComponent(text)}`;
+    const romajiResponse = await fetch(romajiUrl);
+    const romajiData = await romajiResponse.json();
+
+    console.log('Romaji API response:', romajiData);
+    console.log('data[3]:', romajiData[0][1][3]);
+
+    // Romanization is in data[3] when translating to English
+    if (romajiData && romajiData[0][1][3]) {
+      result.romanization = romajiData[0][1][3];
+      console.log('Set romanization to:', result.romanization);
+    } else {
+      console.log('No romanization found in data[3]');
+    }
+
+    console.log('Final result:', result);
+    return result;
   } catch (error) {
     console.error('Translation error:', error);
-    return text;
+    return { translation: text, romanization: '' };
   }
+}
+
+// For now, just return the text as-is
+// Full furigana generation requires complex setup
+// The Chinese translation will still work
+export async function generateFurigana(text) {
+  // Simply return the original Japanese text
+  // Users can see the kanji and get the Chinese translation
+  return text;
 }
 
 export async function convertTxtToHtml(file) {
@@ -35,10 +70,13 @@ export async function convertTxtToHtml(file) {
     for (const line of lines) {
       const trimmedLine = line.trim();
       if (trimmedLine) {
-        const translation = await translateText(trimmedLine);
+        const result = await translateText(trimmedLine);
+        const furigana = await generateFurigana(trimmedLine);
         translatedLines.push({
           japanese: trimmedLine,
-          english: translation
+          furigana: furigana,
+          romanization: result.romanization,
+          chinese: result.translation
         });
       }
     }
@@ -193,10 +231,13 @@ export async function convertPdfToHtml(file) {
       const translatedLines = [];
       for (const line of finalTextLines) {
         if (line) {
-          const translation = await translateText(line);
+          const result = await translateText(line);
+          const furigana = await generateFurigana(line);
           translatedLines.push({
             japanese: line,
-            english: translation
+            furigana: furigana,
+            romanization: result.romanization,
+            chinese: result.translation
           });
         }
       }

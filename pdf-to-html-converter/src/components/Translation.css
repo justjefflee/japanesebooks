@@ -169,19 +169,50 @@
   min-width: 0;
 }
 
+.text-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.language-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
 .japanese-text {
   font-size: 16px;
   color: #1a1a1a;
   line-height: 1.6;
-  margin-bottom: 8px;
   font-weight: 500;
+  flex: 1;
 }
 
-.english-translation {
+.romanization-text {
+  font-size: 13px;
+  color: #888;
+  font-family: 'Courier New', monospace;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.chinese-translation {
   font-size: 14px;
   color: #666;
   font-style: italic;
   line-height: 1.5;
+  flex: 1;
+}
+
+.furigana-text ruby {
+  ruby-position: over;
+}
+
+.furigana-text rt {
+  font-size: 0.5em;
+  color: #666;
 }
 
 .text-line-actions {

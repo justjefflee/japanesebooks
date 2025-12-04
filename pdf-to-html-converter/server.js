@@ -302,6 +302,38 @@ app.post('/api/save-book', async (req, res) => {
   }
 });
 
+// Furigana API proxy to avoid CORS issues
+app.post('/api/furigana', async (req, res) => {
+  try {
+    const { text } = req.body;
+
+    if (!text) {
+      return res.status(400).json({ error: 'Text is required' });
+    }
+
+    const response = await fetch('https://hiragana.jp/api/v1/furigana', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        sentence: text,
+        type: 'hiragana'
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Furigana API returned ${response.status}`);
+    }
+
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error('Furigana proxy error:', error);
+    res.status(500).json({ error: 'Failed to generate furigana', details: error.message });
+  }
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Server is running' });
