@@ -62,31 +62,44 @@ export async function convertTxtToHtml(file) {
   try {
     const text = await file.text();
 
-    // Split text by line breaks
-    const lines = text.split(/\r?\n/);
+    // Split text into blocks by two consecutive blank lines
+    // Pattern matches two or more line breaks with optional whitespace
+    const blocks = text.split(/\n\s*\n\s*\n/);
 
-    // Filter out empty lines and translate each line
-    const translatedLines = [];
-    for (const line of lines) {
-      const trimmedLine = line.trim();
-      if (trimmedLine) {
-        const result = await translateText(trimmedLine);
-        const furigana = await generateFurigana(trimmedLine);
+    const pages = [];
+    let pageNumber = 1;
+
+    for (const block of blocks) {
+      const lines = block.split(/\r?\n/).map(line => line.trim()).filter(line => line);
+
+      // Skip empty blocks
+      if (lines.length === 0) continue;
+
+      // First line is the title
+      const title = lines[0];
+
+      // Translate all lines (including title)
+      const translatedLines = [];
+      for (const line of lines) {
+        const result = await translateText(line);
+        const furigana = await generateFurigana(line);
         translatedLines.push({
-          japanese: trimmedLine,
+          japanese: line,
           furigana: furigana,
           romanization: result.romanization,
           chinese: result.translation
         });
       }
-    }
 
-    // Create a single "page" with all text lines
-    const pages = [{
-      pageNumber: 1,
-      imageData: null, // No image for text files
-      textLines: translatedLines
-    }];
+      pages.push({
+        pageNumber: pageNumber,
+        title: title, // Add title to page object
+        imageData: null, // No image for text files
+        textLines: translatedLines
+      });
+
+      pageNumber++;
+    }
 
     // Generate unique ID
     const id = Date.now().toString() + Math.random().toString(36).substring(2, 15);
@@ -97,7 +110,7 @@ export async function convertTxtToHtml(file) {
         id: id,
         title: file.name.replace('.txt', ''),
         originalFileName: file.name,
-        pageCount: 1,
+        pageCount: pages.length,
         fileSize: file.size,
         convertedAt: new Date().toISOString(),
         tags: [],
