@@ -14,6 +14,10 @@ A React web application that converts PDF files to HTML format, preserving text 
 
 ## Getting Started
 
+## Anki Export
+
+Edit card template to add {{tts ja_JP:Front}}
+
 ### Prerequisites
 
 - Node.js (v20 or higher recommended)
@@ -22,16 +26,19 @@ A React web application that converts PDF files to HTML format, preserving text 
 ### Installation
 
 1. Navigate to the project directory:
+
 ```bash
 cd pdf-to-html-converter
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Start the development server:
+
 ```bash
 npm run dev
 ```
@@ -41,10 +48,12 @@ npm run dev
 ## How to Use
 
 1. **Upload PDFs**:
+
    - Drag and drop PDF files onto the upload area, or
    - Click the upload area to browse and select files
 
 2. **Convert**:
+
    - Click the "Convert" button to start the conversion process
    - Watch the progress bar as files are being converted
 
@@ -59,6 +68,7 @@ npm run dev
 ### Conversion Process
 
 The converter:
+
 1. Reads the PDF file using PDF.js
 2. Renders each page as a high-resolution image
 3. Extracts text content from each page
@@ -68,6 +78,7 @@ The converter:
 ### Output Format
 
 Each converted HTML file includes:
+
 - Embedded page images (as base64 data URLs)
 - Extracted text content
 - Responsive styling
@@ -102,6 +113,7 @@ The built files will be in the `dist` directory, ready to be deployed to any sta
 ## Browser Compatibility
 
 Works on all modern browsers that support:
+
 - ES6+ JavaScript
 - Canvas API
 - File API

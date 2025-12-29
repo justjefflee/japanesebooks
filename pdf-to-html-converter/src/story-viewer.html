@@ -42,6 +42,66 @@
       font-size: 14px;
       min-width: 200px;
     }
+    .speed-control {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 10px;
+    }
+    .speed-control label {
+      font-weight: bold;
+      font-size: 14px;
+    }
+    .speed-control input[type="range"] {
+      width: 200px;
+    }
+    .speed-value {
+      font-size: 14px;
+      color: #666;
+      min-width: 60px;
+    }
+    .font-size-control {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 10px;
+    }
+    .font-size-control label {
+      font-weight: bold;
+      font-size: 14px;
+    }
+    .font-size-btn {
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .font-size-btn:hover {
+      background: #5568d3;
+      transform: scale(1.05);
+    }
+    .font-size-btn:active {
+      transform: scale(0.95);
+    }
+    .font-size-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .font-size-value {
+      font-size: 14px;
+      color: #666;
+      min-width: 40px;
+    }
     .content {
       max-width: 1200px;
       margin: 0 auto;
@@ -127,27 +187,32 @@
       flex-direction: column;
       gap: 4px;
       flex-shrink: 0;
-      padding-top: 2px;
+      padding-top: 4px;
     }
     .text-line-content {
       flex: 1;
       word-wrap: break-word;
       line-height: 1.6;
     }
+    :root {
+      --japanese-font-size: 16px;
+      --romanization-font-size: 12px;
+      --chinese-font-size: 13px;
+    }
     .japanese-text {
-      font-size: 16px;
+      font-size: var(--japanese-font-size);
       color: #1a1a1a;
       margin-bottom: 2px;
     }
     .romanization-text {
-      font-size: 12px;
+      font-size: var(--romanization-font-size);
       color: #888;
       font-family: 'Courier New', monospace;
       margin-top: 2px;
       margin-bottom: 2px;
     }
     .chinese-translation {
-      font-size: 13px;
+      font-size: var(--chinese-font-size);
       color: #666;
       font-style: italic;
       margin-top: 2px;
@@ -173,8 +238,8 @@
       transition: all 0.2s;
       flex-shrink: 0;
     }
-    .speaker-btn.slow {
-      background: #f59e0b;
+    .speaker-btn.chinese-btn {
+      background: #10b981;
     }
     .speaker-btn svg {
       width: 14px;
@@ -184,8 +249,8 @@
       background: #5568d3;
       transform: scale(1.1);
     }
-    .speaker-btn.slow:hover {
-      background: #d97706;
+    .speaker-btn.chinese-btn:hover {
+      background: #059669;
     }
     .speaker-btn:active {
       transform: scale(0.95);
@@ -193,12 +258,6 @@
     .speaker-btn.speaking {
       background: #28a745;
       animation: pulse 1s infinite;
-    }
-    .speaker-btn[style*="background: #10b981"]:hover {
-      background: #059669 !important;
-    }
-    .speaker-btn.slow[style*="background: #10b981"]:hover {
-      background: #047857 !important;
     }
     @keyframes pulse {
       0%, 100% { opacity: 1; }
@@ -228,6 +287,17 @@
         <option value="">-- Choose a story --</option>
       </select>
     </div>
+    <div class="speed-control">
+      <label for="speedSlider">Speech Speed:</label>
+      <input type="range" id="speedSlider" min="0.5" max="1.5" step="0.1" value="0.9" oninput="updateSpeed(this.value)">
+      <span class="speed-value" id="speedValue">0.9x</span>
+    </div>
+    <div class="font-size-control">
+      <label>Font Size:</label>
+      <button class="font-size-btn" id="decreaseFont" onclick="changeFontSize(-1)" title="Decrease font size">−</button>
+      <span class="font-size-value" id="fontSizeValue">100%</span>
+      <button class="font-size-btn" id="increaseFont" onclick="changeFontSize(1)" title="Increase font size">+</button>
+    </div>
   </div>
 
   <div class="content">
@@ -240,8 +310,62 @@
     let currentUtterance = null;
     let speechSynthesis = window.speechSynthesis;
     let booksData = [];
+    let speechSpeed = 0.9;
+    let fontSizeLevel = 0; // -3 to +3, where 0 is 100%
+    const fontSizeSteps = [70, 80, 90, 100, 110, 125, 150]; // percentage values
 
-    function speakText(text, button, rate = 0.9, lang = 'ja-JP') {
+    function updateSpeed(value) {
+      speechSpeed = parseFloat(value);
+      document.getElementById('speedValue').textContent = speechSpeed.toFixed(1) + 'x';
+    }
+
+    function changeFontSize(delta) {
+      const newLevel = fontSizeLevel + delta;
+
+      // Clamp between -3 and +3
+      if (newLevel < -3 || newLevel > 3) return;
+
+      fontSizeLevel = newLevel;
+      const percentage = fontSizeSteps[fontSizeLevel + 3];
+
+      // Update display
+      document.getElementById('fontSizeValue').textContent = percentage + '%';
+
+      // Apply font size to text elements
+      applyFontSize(percentage);
+
+      // Update button states
+      document.getElementById('decreaseFont').disabled = (fontSizeLevel <= -3);
+      document.getElementById('increaseFont').disabled = (fontSizeLevel >= 3);
+
+      // Save to localStorage
+      localStorage.setItem('fontSizeLevel', fontSizeLevel);
+    }
+
+    function applyFontSize(percentage) {
+      const factor = percentage / 100;
+
+      // Update CSS custom properties
+      document.documentElement.style.setProperty('--japanese-font-size', (16 * factor) + 'px');
+      document.documentElement.style.setProperty('--romanization-font-size', (12 * factor) + 'px');
+      document.documentElement.style.setProperty('--chinese-font-size', (13 * factor) + 'px');
+    }
+
+    function loadFontSizePreference() {
+      const saved = localStorage.getItem('fontSizeLevel');
+      if (saved !== null) {
+        fontSizeLevel = parseInt(saved);
+        const percentage = fontSizeSteps[fontSizeLevel + 3];
+        document.getElementById('fontSizeValue').textContent = percentage + '%';
+        applyFontSize(percentage);
+
+        // Update button states
+        document.getElementById('decreaseFont').disabled = (fontSizeLevel <= -3);
+        document.getElementById('increaseFont').disabled = (fontSizeLevel >= 3);
+      }
+    }
+
+    function speakText(text, button, lang = 'ja-JP') {
       // Stop any ongoing speech
       if (currentUtterance) {
         speechSynthesis.cancel();
@@ -253,7 +377,7 @@
       // Create new utterance
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = lang;
-      utterance.rate = rate;
+      utterance.rate = speechSpeed;
 
       // Add speaking class
       button.classList.add('speaking');
@@ -392,43 +516,27 @@
               html += `
                 <div class="text-line">
                   <div class="text-line-buttons">
-                    <button class="speaker-btn" onclick="speakText('${escapedText}', this, 0.9, 'ja-JP')" title="Speak Japanese at normal speed">
+                    <button class="speaker-btn" onclick="speakText('${escapedText}', this, 'ja-JP')" title="Speak Japanese">
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
                         <path d="M11 5L6 9H2v6h4l5 4V5z"/>
                         <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
                         <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
                       </svg>
                     </button>
-                    <button class="speaker-btn slow" onclick="speakText('${escapedText}', this, 0.6, 'ja-JP')" title="Speak Japanese slowly">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                        <path d="M11 5L6 9H2v6h4l5 4V5z"/>
-                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
-                      </svg>
-                    </button>
+                    ${showTranslation ? `
+                      <button class="speaker-btn chinese-btn" onclick="speakText('${escapedTranslation}', this, 'zh-TW')" title="Speak Chinese">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                          <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+                          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+                        </svg>
+                      </button>
+                    ` : ''}
                   </div>
                   <div class="text-line-content">
                     <div class="japanese-text">${line.japanese}</div>
                     ${romanization ? `<div class="romanization-text">${romanization}</div>` : ''}
-                    ${showTranslation ? `
-                      <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
-                        <div class="chinese-translation" style="flex: 1;">${translation}</div>
-                        <div style="display: flex; gap: 4px;">
-                          <button class="speaker-btn" onclick="speakText('${escapedTranslation}', this, 0.9, 'zh-TW')" title="Speak Chinese at normal speed" style="background: #10b981;">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                              <path d="M11 5L6 9H2v6h4l5 4V5z"/>
-                              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
-                              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
-                            </svg>
-                          </button>
-                          <button class="speaker-btn slow" onclick="speakText('${escapedTranslation}', this, 0.6, 'zh-TW')" title="Speak Chinese slowly" style="background: #10b981;">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                              <path d="M11 5L6 9H2v6h4l5 4V5z"/>
-                              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
-                            </svg>
-                          </button>
-                        </div>
-                      </div>
-                    ` : ''}
+                    ${showTranslation ? `<div class="chinese-translation">${translation}</div>` : ''}
                   </div>
                 </div>
               `;
@@ -453,7 +561,8 @@
       errorDiv.style.display = 'block';
     }
 
-    // Load metadata on page load
+    // Load preferences and metadata on page load
+    loadFontSizePreference();
     loadMetadata();
   </script>
 </body>

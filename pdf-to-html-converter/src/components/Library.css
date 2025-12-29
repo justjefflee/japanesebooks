@@ -237,6 +237,10 @@
   background: #e8eaf6;
 }
 
+.anki-btn:hover {
+  background: #d1fae5;
+}
+
 .reconvert-btn:hover {
   background: #e3f2fd;
 }

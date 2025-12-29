@@ -5,6 +5,7 @@ import {
   deleteMetadata,
   clearAllMetadata
 } from '../utils/fileApi';
+import { exportBookToAnki } from '../utils/ankiConnect';
 import './Library.css';
 
 function Library({ onClose, onReconvert, onNavigateToConverter, onNavigateToTranslation }) {
@@ -17,6 +18,7 @@ function Library({ onClose, onReconvert, onNavigateToConverter, onNavigateToTran
   const [editNotes, setEditNotes] = useState('');
   const [editTags, setEditTags] = useState('');
   const [sortBy, setSortBy] = useState('date'); // date, name, pages
+  const [exportingId, setExportingId] = useState(null);
 
   useEffect(() => {
     loadHistory();
@@ -154,6 +156,32 @@ function Library({ onClose, onReconvert, onNavigateToConverter, onNavigateToTran
     window.open('http://localhost:3001/story-viewer.html', '_blank');
   };
 
+  const handleExportToAnki = async (item) => {
+    setExportingId(item.id);
+
+    try {
+      const stats = await exportBookToAnki(item);
+
+      // Show success message
+      let message = `✅ Successfully exported to Anki!\n\n`;
+      message += `📚 Deck: ${stats.deckName}\n`;
+      message += `✨ Cards added: ${stats.addedCount}\n`;
+      if (stats.skippedCount > 0) {
+        message += `⏭️  Duplicates skipped: ${stats.skippedCount}\n`;
+      }
+      if (stats.errorCount > 0) {
+        message += `⚠️  Errors: ${stats.errorCount}\n`;
+      }
+
+      alert(message);
+    } catch (error) {
+      console.error('Export to Anki failed:', error);
+      alert(`Export to Anki failed:\n${error.message}`);
+    } finally {
+      setExportingId(null);
+    }
+  };
+
   return (
     <div className="library-page">
       <div className="library-content">
@@ -253,6 +281,18 @@ function Library({ onClose, onReconvert, onNavigateToConverter, onNavigateToTran
                       title="View HTML file"
                     >
                       👁️
+                    </button>
+                    <button
+                      onClick={() => handleExportToAnki(item)}
+                      className="action-btn anki-btn"
+                      title="Export to Anki"
+                      disabled={exportingId === item.id}
+                      style={{
+                        opacity: exportingId === item.id ? 0.5 : 1,
+                        cursor: exportingId === item.id ? 'wait' : 'pointer'
+                      }}
+                    >
+                      {exportingId === item.id ? '⏳' : '🎴'}
                     </button>
                     <button
                       onClick={() => onReconvert(item)}

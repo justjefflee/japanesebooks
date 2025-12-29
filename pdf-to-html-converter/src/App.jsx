@@ -3,6 +3,7 @@ import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
 import { convertPdfToHtml, convertTxtToHtml } from './utils/pdfConverter';
 import { saveHtmlToServer, checkServerHealth, saveBookData } from './utils/fileApi';
+import { exportBookToAnki } from './utils/ankiConnect';
 import Library from './components/Library';
 import Translation from './components/Translation';
 import './App.css';
@@ -16,6 +17,7 @@ function App() {
   const [dragActive, setDragActive] = useState(false);
   const [currentView, setCurrentView] = useState('library'); // 'library' or 'converter'
   const [serverOnline, setServerOnline] = useState(false);
+  const [exportingToAnki, setExportingToAnki] = useState(false);
 
   useEffect(() => {
     // Check server health on mount
@@ -123,6 +125,58 @@ function App() {
   const handleReconvert = async (historyItem) => {
     // Just open the story viewer - all books are accessible there
     window.open('http://localhost:3001/story-viewer.html', '_blank');
+  };
+
+  const exportAllToAnki = async () => {
+    setExportingToAnki(true);
+
+    try {
+      const successfulResults = results.filter(r => r.success && r.data);
+
+      if (successfulResults.length === 0) {
+        alert('No successful conversions to export');
+        return;
+      }
+
+      let totalAdded = 0;
+      let totalSkipped = 0;
+      let totalErrors = 0;
+      const exportedBooks = [];
+
+      for (const result of successfulResults) {
+        try {
+          const stats = await exportBookToAnki(result.data);
+          totalAdded += stats.addedCount;
+          totalSkipped += stats.skippedCount;
+          totalErrors += stats.errorCount;
+          exportedBooks.push(stats.deckName);
+        } catch (error) {
+          console.error(`Failed to export ${result.data.title}:`, error);
+          alert(`Failed to export "${result.data.title}":\n${error.message}`);
+          setExportingToAnki(false);
+          return;
+        }
+      }
+
+      // Show success message
+      let message = `✅ Successfully exported to Anki!\n\n`;
+      message += `📚 Books exported: ${exportedBooks.length}\n`;
+      message += `✨ Cards added: ${totalAdded}\n`;
+      if (totalSkipped > 0) {
+        message += `⏭️  Duplicates skipped: ${totalSkipped}\n`;
+      }
+      if (totalErrors > 0) {
+        message += `⚠️  Errors: ${totalErrors}\n`;
+      }
+      message += `\nDecks created:\n${exportedBooks.map(d => `• ${d}`).join('\n')}`;
+
+      alert(message);
+    } catch (error) {
+      console.error('Export to Anki failed:', error);
+      alert(`Export to Anki failed:\n${error.message}`);
+    } finally {
+      setExportingToAnki(false);
+    }
   };
 
   // Show Library, Converter, or Translation based on currentView
@@ -277,9 +331,19 @@ function App() {
             <div className="results-header">
               <h3>Conversion Results</h3>
               {results.some(r => r.success) && (
-                <button className="download-all-btn" onClick={openStoryViewer}>
-                  📖 View in Story Viewer
-                </button>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <button className="download-all-btn" onClick={openStoryViewer}>
+                    📖 View in Story Viewer
+                  </button>
+                  <button
+                    className="download-all-btn"
+                    onClick={exportAllToAnki}
+                    disabled={exportingToAnki}
+                    style={{ background: exportingToAnki ? '#ccc' : '#10b981' }}
+                  >
+                    {exportingToAnki ? '⏳ Exporting...' : '🎴 Export to Anki'}
+                  </button>
+                </div>
               )}
             </div>
             <div className="results-list">
