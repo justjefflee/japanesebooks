@@ -15,7 +15,11 @@
       "Bash(cat:*)",
       "Bash(find:*)",
       "Bash(xxd:*)",
-      "Bash(npm uninstall:*)"
+      "Bash(npm uninstall:*)",
+      "Bash(python3:*)",
+      "Bash(for text in \"麦わら\" \"帽子\" \"君\" \"麦わらの帽子\" \"帽子の君\")",
+      "Bash(do echo -n \"Testing ''''$text'''': \")",
+      "Bash(done)"
     ],
     "deny": [],
     "ask": []

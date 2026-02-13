@@ -307,8 +307,8 @@
   </div>
 
   <script>
-    let currentUtterance = null;
-    let speechSynthesis = window.speechSynthesis;
+    let currentAudio = null;
+    let currentButton = null;
     let booksData = [];
     let speechSpeed = 0.6;
     let fontSizeLevel = 3; // -3 to +3, where 0 is 100%
@@ -365,58 +365,77 @@
       }
     }
 
-    function speakText(text, button, lang = 'ja-JP') {
-      console.log("speakText "+text + " " + speechSpeed );
-      // Stop any ongoing speech
-      if (currentUtterance) {
-        speechSynthesis.cancel();
-        document.querySelectorAll('.speaker-btn').forEach(btn => {
-          btn.classList.remove('speaking');
-        });
+    async function speakText(text, button, lang = 'ja-JP') {
+      console.log("speakText " + text + " " + speechSpeed);
+
+      // Stop any ongoing audio
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
       }
 
-      // Create new utterance
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = lang;
-      utterance.rate = speechSpeed;
-
-      if (lang.startsWith("ja")) {
-        // Wait for voices to load, then select a Japanese voice
-        const voices = window.speechSynthesis.getVoices();
-        const japaneseVoice = voices.find(voice => voice.lang.startsWith('ja'));
-    
-        if (japaneseVoice) {
-          utterance.voice = japaneseVoice;
-        }
+      // Remove speaking class from previous button
+      if (currentButton) {
+        currentButton.classList.remove('speaking');
       }
 
-      // Add speaking class
+      // Add speaking class to current button
       button.classList.add('speaking');
+      currentButton = button;
 
-      // Remove speaking class when done
-      utterance.onend = () => {
+      try {
+        // Convert language code: ja-JP -> ja, zh-TW -> zh
+        const langCode = lang.split('-')[0];
+
+        // Google TTS has a ~200 character limit, truncate if needed
+        const maxLength = 200;
+        const truncatedText = text.length > maxLength ? text.substring(0, maxLength) : text;
+
+        // Create Google TTS URL
+        const url = `/api/tts?ie=UTF-8&tl=${langCode}&client=tw-ob&ttsspeed=1&q=${encodeURIComponent(truncatedText)}`;
+        const audio = new Audio(url);
+        audio.playbackRate = speechSpeed;
+
+        currentAudio = audio;
+
+        // Remove speaking class when done
+        audio.onended = () => {
+          button.classList.remove('speaking');
+          currentAudio = null;
+          currentButton = null;
+        };
+
+        audio.onerror = (error) => {
+          console.error('Audio playback error:', error);
+          button.classList.remove('speaking');
+          currentAudio = null;
+          currentButton = null;
+        };
+
+        await audio.play();
+      } catch (error) {
+        console.error('Failed to play audio:', error);
         button.classList.remove('speaking');
-        currentUtterance = null;
-      };
-
-      utterance.onerror = () => {
-        button.classList.remove('speaking');
-        currentUtterance = null;
-      };
-
-      currentUtterance = utterance;
-      console.log(utterance);
-      speechSynthesis.speak(utterance);
+        currentAudio = null;
+        currentButton = null;
+      }
     }
 
     function stopSpeaking() {
-      if (currentUtterance) {
-        speechSynthesis.cancel();
-        document.querySelectorAll('.speaker-btn').forEach(btn => {
-          btn.classList.remove('speaking');
-        });
-        currentUtterance = null;
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
       }
+
+      if (currentButton) {
+        currentButton.classList.remove('speaking');
+        currentButton = null;
+      }
+
+      document.querySelectorAll('.speaker-btn').forEach(btn => {
+        btn.classList.remove('speaking');
+      });
     }
 
     async function loadMetadata() {

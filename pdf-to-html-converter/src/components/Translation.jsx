@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
-import { translateText, generateFurigana } from '../utils/pdfConverter';
+import { translateText, generateFurigana, speakWithGoogleTTS } from '../utils/pdfConverter';
 import './Translation.css';
 
 function Translation({ onNavigateToLibrary }) {
   const [inputText, setInputText] = useState('');
   const [sentences, setSentences] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [currentUtterance, setCurrentUtterance] = useState(null);
+  const [currentAudio, setCurrentAudio] = useState(null);
+  const [playingButton, setPlayingButton] = useState(null);
 
   useEffect(() => {
     // Debounce translation
@@ -72,42 +73,63 @@ function Translation({ onNavigateToLibrary }) {
     setLoading(false);
   };
 
-  const speakText = (text, lang = 'ja-JP', rate = 0.9, buttonElement) => {
-    // Stop any ongoing speech
-    if (currentUtterance) {
-      window.speechSynthesis.cancel();
-      document.querySelectorAll('.speaker-btn').forEach(btn => {
-        btn.classList.remove('speaking');
-      });
+  const speakText = async (text, lang = 'ja', rate = 0.9, buttonElement) => {
+    // Stop any ongoing audio
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
     }
 
-    // Create new utterance
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = lang;
-    utterance.rate = rate;
+    // Remove speaking class from previous button
+    if (playingButton) {
+      playingButton.classList.remove('speaking');
+    }
 
-    // Add speaking class
+    // Add speaking class to current button
     if (buttonElement) {
       buttonElement.classList.add('speaking');
+      setPlayingButton(buttonElement);
     }
 
-    // Remove speaking class when done
-    utterance.onend = () => {
+    try {
+      // Google TTS has a ~200 character limit, truncate if needed
+      const maxLength = 200;
+      const truncatedText = text.length > maxLength ? text.substring(0, maxLength) : text;
+
+      // Create and play audio using Google TTS
+      const url = `/api/tts?ie=UTF-8&tl=${lang}&client=tw-ob&ttsspeed=1&q=${encodeURIComponent(truncatedText)}`;
+      const audio = new Audio(url);
+      audio.playbackRate = rate;
+
+      setCurrentAudio(audio);
+
+      // Remove speaking class when done
+      audio.onended = () => {
+        if (buttonElement) {
+          buttonElement.classList.remove('speaking');
+        }
+        setCurrentAudio(null);
+        setPlayingButton(null);
+      };
+
+      audio.onerror = (error) => {
+        console.error('Audio playback error:', error);
+        if (buttonElement) {
+          buttonElement.classList.remove('speaking');
+        }
+        setCurrentAudio(null);
+        setPlayingButton(null);
+      };
+
+      await audio.play();
+    } catch (error) {
+      console.error('Failed to play audio:', error);
       if (buttonElement) {
         buttonElement.classList.remove('speaking');
       }
-      setCurrentUtterance(null);
-    };
-
-    utterance.onerror = () => {
-      if (buttonElement) {
-        buttonElement.classList.remove('speaking');
-      }
-      setCurrentUtterance(null);
-    };
-
-    setCurrentUtterance(utterance);
-    window.speechSynthesis.speak(utterance);
+      setCurrentAudio(null);
+      setPlayingButton(null);
+    }
   };
 
   const clearText = () => {
@@ -163,14 +185,14 @@ function Translation({ onNavigateToLibrary }) {
                       <div className="language-actions">
                         <button
                           className="speaker-btn"
-                          onClick={(e) => speakText(sentence.japanese, 'ja-JP', 0.9, e.currentTarget)}
+                          onClick={(e) => speakText(sentence.japanese, 'ja', 1.0, e.currentTarget)}
                           title="Speak Japanese at normal speed"
                         >
                           🇯🇵
                         </button>
                         <button
                           className="speaker-btn slow"
-                          onClick={(e) => speakText(sentence.japanese, 'ja-JP', 0.6, e.currentTarget)}
+                          onClick={(e) => speakText(sentence.japanese, 'ja', 0.7, e.currentTarget)}
                           title="Speak Japanese slowly"
                         >
                           🇯🇵 🐢
@@ -186,14 +208,14 @@ function Translation({ onNavigateToLibrary }) {
                         <div className="language-actions">
                           <button
                             className="speaker-btn chinese"
-                            onClick={(e) => speakText(sentence.chinese, 'zh-TW', 0.9, e.currentTarget)}
+                            onClick={(e) => speakText(sentence.chinese, 'zh', 1.0, e.currentTarget)}
                             title="Speak Chinese at normal speed"
                           >
                             🇹🇼
                           </button>
                           <button
                             className="speaker-btn slow chinese"
-                            onClick={(e) => speakText(sentence.chinese, 'zh-TW', 0.6, e.currentTarget)}
+                            onClick={(e) => speakText(sentence.chinese, 'zh', 0.7, e.currentTarget)}
                             title="Speak Chinese slowly"
                           >
                             🇹🇼 🐢

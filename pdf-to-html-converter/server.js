@@ -334,6 +334,43 @@ app.post('/api/furigana', async (req, res) => {
   }
 });
 
+// Google TTS proxy to avoid CORS issues
+app.get('/api/tts', async (req, res) => {
+  try {
+    const { ie, tl, client, q, ttsspeed } = req.query;
+
+    if (!tl || !q) {
+      return res.status(400).json({ error: 'Language (tl) and text (q) are required' });
+    }
+
+    const url = `https://translate.google.com/translate_tts?ie=${ie || 'UTF-8'}&tl=${tl}&client=${client || 'tw-ob'}&ttsspeed=${ttsspeed || '1'}&q=${encodeURIComponent(q)}`;
+
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+        'Referer': 'https://translate.google.com/'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Google TTS API returned ${response.status}`);
+    }
+
+    // Get the audio buffer
+    const buffer = await response.arrayBuffer();
+
+    // Set appropriate headers for audio
+    res.setHeader('Content-Type', 'audio/mpeg');
+    res.setHeader('Content-Length', buffer.byteLength);
+
+    // Send the audio data
+    res.send(Buffer.from(buffer));
+  } catch (error) {
+    console.error('TTS proxy error:', error);
+    res.status(500).json({ error: 'Failed to generate TTS audio', details: error.message });
+  }
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Server is running' });

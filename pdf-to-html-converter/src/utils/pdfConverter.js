@@ -58,6 +58,34 @@ export async function generateFurigana(text) {
   return text;
 }
 
+// Google TTS function
+// Returns a URL that can be used to play audio
+export function getGoogleTTSUrl(text, lang = 'ja') {
+  // Use proxy to avoid CORS issues
+  return `/api/tts?ie=UTF-8&tl=${lang}&client=tw-ob&ttsspeed=1&q=${encodeURIComponent(text)}`;
+}
+
+// Play text using Google TTS
+export async function speakWithGoogleTTS(text, lang = 'ja', rate = 1.0) {
+  try {
+    const url = getGoogleTTSUrl(text, lang);
+    const audio = new Audio(url);
+
+    // Adjust playback rate (Google TTS doesn't support rate parameter, so we use Audio API)
+    audio.playbackRate = rate;
+
+    // Return a promise that resolves when audio finishes or rejects on error
+    return new Promise((resolve, reject) => {
+      audio.onended = resolve;
+      audio.onerror = () => reject(new Error('Failed to play audio'));
+      audio.play().catch(reject);
+    });
+  } catch (error) {
+    console.error('Google TTS error:', error);
+    throw error;
+  }
+}
+
 export async function convertTxtToHtml(file) {
   try {
     const text = await file.text();

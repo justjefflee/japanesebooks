@@ -21,10 +21,19 @@ export default defineConfig({
         target: 'https://translate.google.com',
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path.replace(/^\/api\/tts/, '/translate_tts'),
+        rewrite: (path) => {
+          const newPath = path.replace(/^\/api\/tts/, '/translate_tts');
+          console.log('TTS Proxy rewrite:', path, '->', newPath);
+          return newPath;
+        },
         configure: (proxy, options) => {
           proxy.on('proxyReq', (proxyReq, req, res) => {
             console.log('Proxying TTS request:', req.url);
+            proxyReq.setHeader('User-Agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36');
+            proxyReq.setHeader('Referer', 'https://translate.google.com/');
+          });
+          proxy.on('proxyRes', (proxyRes, req, res) => {
+            console.log('TTS Proxy response:', proxyRes.statusCode);
           });
         }
       }
