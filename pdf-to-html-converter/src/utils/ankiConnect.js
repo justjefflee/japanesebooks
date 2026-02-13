@@ -169,76 +169,144 @@ export async function exportBookToAnki(bookData) {
   let skippedCount = 0;
   let errorCount = 0;
 
-  // Process each page as a single card
+  // Check if this is a single-page book
+  const isSinglePage = bookData.pageCount === 1;
+
+  // Process pages
   for (const page of bookData.pages) {
     if (!page.textLines || page.textLines.length === 0) continue;
 
-    try {
-      // Front: All Japanese text from the page (line by line)
-      let front = '';
-      page.textLines.forEach((line, index) => {
-        if (index > 0) front += '<br>';
-        front += line.japanese;
-      });
+    // If single page, create a card for each line
+    if (isSinglePage) {
+      for (const line of page.textLines) {
+        try {
+          // Front: Japanese text
+          const front = line.japanese;
 
-      // Back: Romanization + Chinese translation (line by line)
-      let back = '';
-      page.textLines.forEach((line, index) => {
-        if (index > 0) back += ''; //'<br><br>';
+          // Back: Romanization + Chinese translation
+          let back = '';
 
-        // Add romanization if available
-        if (line.romanization) {
-          back += `<div style="color: #888; font-size: 0.9em; margin-bottom: 4px;">${line.romanization}</div>`;
+          // Add romanization if available
+          if (line.romanization) {
+            back += `<div style="color: #888; font-size: 0.9em; margin-bottom: 4px;">${line.romanization}</div>`;
+          }
+
+          // Add Chinese translation if available and different from Japanese
+          if (line.chinese) {
+            back += `<div style="font-size: 1.1em;">${line.japanese}</div>`;
+            back += `<div style="color: #999; font-size: 0.6em;">${line.chinese}</div>`;
+          }
+
+          // If back is empty, skip
+          if (!back) {
+            skippedCount++;
+            continue;
+          }
+
+          // Add context information
+          back += `<div style="margin-top: 16px; padding-top: 8px; border-top: 1px solid #eee; font-size: 0.8em; color: #999;">`;
+          back += `From: ${bookData.title}`;
+          if (page.title) {
+            back += ` - ${page.title}`;
+          }
+          back += `</div>`;
+
+          // Create tags
+          const tags = [
+            'japanese',
+            bookData.title.replace(/\s+/g, '_'),
+          ];
+
+          // If page has a title, add it as a tag
+          if (page.title) {
+            tags.push(page.title.replace(/\s+/g, '_'));
+          }
+
+          // Audio generation disabled - use AwesomeTTS add-on in Anki for audio
+          const audioFiles = {};
+
+          // Add note to Anki
+          const noteId = await addNote(deckName, front, back, tags, audioFiles);
+
+          if (noteId) {
+            addedCount++;
+          } else {
+            skippedCount++;
+          }
+        } catch (error) {
+          console.error('Error adding note:', error);
+          errorCount++;
+        }
+      }
+    } else {
+      // Multi-page book: create one card per page (original behavior)
+      try {
+        // Front: All Japanese text from the page (line by line)
+        let front = '';
+        page.textLines.forEach((line, index) => {
+          if (index > 0) front += '<br>';
+          front += line.japanese;
+        });
+
+        // Back: Romanization + Chinese translation (line by line)
+        let back = '';
+        page.textLines.forEach((line, index) => {
+          if (index > 0) back += ''; //'<br><br>';
+
+          // Add romanization if available
+          if (line.romanization) {
+            back += `<div style="color: #888; font-size: 0.9em; margin-bottom: 4px;">${line.romanization}</div>`;
+          }
+
+          // Add Chinese translation if available and different from Japanese
+          if (line.chinese) {
+            back += `<div style="font-size: 1.1em;">${line.japanese}</div>`;
+            back += `<div style="color: #999; font-size: 0.6em;">${line.chinese}</div>`;
+          }
+        });
+
+        // If back is empty, skip
+        if (!back) {
+          skippedCount++;
+          continue;
         }
 
-        // Add Chinese translation if available and different from Japanese
-        if (line.chinese) {
-          back += `<div style="font-size: 1.1em;">${line.japanese}</div>`;
-          back += `<div style="color: #999; font-size: 0.6em;">${line.chinese}</div>`;
+        // Add context information
+        back += `<div style="margin-top: 16px; padding-top: 8px; border-top: 1px solid #eee; font-size: 0.8em; color: #999;">`;
+        back += `From: ${bookData.title}`;
+        if (page.title) {
+          back += ` - ${page.title}`;
+        } else if (bookData.pageCount > 1) {
+          back += ` - Page ${page.pageNumber}`;
         }
-      });
+        back += `</div>`;
 
-      // If back is empty, skip
-      if (!back) {
-        skippedCount++;
-        continue;
+        // Create tags
+        const tags = [
+          'japanese',
+          bookData.title.replace(/\s+/g, '_'),
+        ];
+
+        // If page has a title, add it as a tag
+        if (page.title) {
+          tags.push(page.title.replace(/\s+/g, '_'));
+        }
+
+        // Audio generation disabled - use AwesomeTTS add-on in Anki for audio
+        const audioFiles = {};
+
+        // Add note to Anki
+        const noteId = await addNote(deckName, front, back, tags, audioFiles);
+
+        if (noteId) {
+          addedCount++;
+        } else {
+          skippedCount++;
+        }
+      } catch (error) {
+        console.error('Error adding note:', error);
+        errorCount++;
       }
-
-      // Add context information
-      back += `<div style="margin-top: 16px; padding-top: 8px; border-top: 1px solid #eee; font-size: 0.8em; color: #999;">`;
-      back += `From: ${bookData.title}`;
-      if (page.title) {
-        back += ` - ${page.title}`;
-      } else if (bookData.pageCount > 1) {
-        back += ` - Page ${page.pageNumber}`;
-      }
-      back += `</div>`;
-
-      // Create tags
-      const tags = [
-        'japanese',
-        bookData.title.replace(/\s+/g, '_'),
-      ];
-
-      // If page has a title, add it as a tag
-      if (page.title) {
-        tags.push(page.title.replace(/\s+/g, '_'));
-      }
-
-      // Audio generation disabled - use AwesomeTTS add-on in Anki for audio
-      const audioFiles = {};
-
-      // Add note to Anki
-      const noteId = await addNote(deckName, front, back, tags, audioFiles);
-
-      if (noteId) {
-        addedCount++;
-      } else {
-        skippedCount++;
-      }
-    } catch (error) {
-      console.error('Error adding note:', error);
-      errorCount++;
     }
   }
 
