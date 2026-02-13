@@ -310,8 +310,8 @@
     let currentUtterance = null;
     let speechSynthesis = window.speechSynthesis;
     let booksData = [];
-    let speechSpeed = 0.9;
-    let fontSizeLevel = 0; // -3 to +3, where 0 is 100%
+    let speechSpeed = 0.6;
+    let fontSizeLevel = 3; // -3 to +3, where 0 is 100%
     const fontSizeSteps = [70, 80, 90, 100, 110, 125, 150]; // percentage values
 
     function updateSpeed(value) {
@@ -366,6 +366,7 @@
     }
 
     function speakText(text, button, lang = 'ja-JP') {
+      console.log("speakText "+text + " " + speechSpeed );
       // Stop any ongoing speech
       if (currentUtterance) {
         speechSynthesis.cancel();
@@ -378,6 +379,16 @@
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = lang;
       utterance.rate = speechSpeed;
+
+      if (lang.startsWith("ja")) {
+        // Wait for voices to load, then select a Japanese voice
+        const voices = window.speechSynthesis.getVoices();
+        const japaneseVoice = voices.find(voice => voice.lang.startsWith('ja'));
+    
+        if (japaneseVoice) {
+          utterance.voice = japaneseVoice;
+        }
+      }
 
       // Add speaking class
       button.classList.add('speaking');
@@ -394,6 +405,7 @@
       };
 
       currentUtterance = utterance;
+      console.log(utterance);
       speechSynthesis.speak(utterance);
     }
 

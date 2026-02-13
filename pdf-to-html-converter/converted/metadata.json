@@ -1,5 +1,713 @@
 [
   {
+    "id": "1770819501895y0z9noaeef",
+    "title": "katakana",
+    "originalFileName": "katakana.txt",
+    "pageCount": 1,
+    "fileSize": 540,
+    "convertedAt": "2026-02-11T14:18:21.895Z",
+    "tags": [],
+    "notes": "",
+    "savedToServer": false,
+    "pages": [
+      {
+        "pageNumber": 1,
+        "title": "アメリカ",
+        "imageData": null,
+        "textLines": [
+          {
+            "japanese": "アメリカ",
+            "furigana": "アメリカ",
+            "romanization": "Amerika",
+            "chinese": "美國"
+          },
+          {
+            "japanese": "イタリア",
+            "furigana": "イタリア",
+            "romanization": "Itaria",
+            "chinese": "義大利"
+          },
+          {
+            "japanese": "ウイルス",
+            "furigana": "ウイルス",
+            "romanization": "Uirusu",
+            "chinese": "病毒"
+          },
+          {
+            "japanese": "エネルギー",
+            "furigana": "エネルギー",
+            "romanization": "Enerugī",
+            "chinese": "活力"
+          },
+          {
+            "japanese": "オレンジ",
+            "furigana": "オレンジ",
+            "romanization": "Orenji",
+            "chinese": "橘子"
+          },
+          {
+            "japanese": "カメラ",
+            "furigana": "カメラ",
+            "romanization": "Kamera",
+            "chinese": "相機"
+          },
+          {
+            "japanese": "キロ",
+            "furigana": "キロ",
+            "romanization": "Kiro",
+            "chinese": "公斤"
+          },
+          {
+            "japanese": "クラブ",
+            "furigana": "クラブ",
+            "romanization": "Kurabu",
+            "chinese": "俱樂部"
+          },
+          {
+            "japanese": "ケーキ",
+            "furigana": "ケーキ",
+            "romanization": "Kēki",
+            "chinese": "蛋糕"
+          },
+          {
+            "japanese": "コーヒー",
+            "furigana": "コーヒー",
+            "romanization": "Kōhī",
+            "chinese": "咖啡"
+          },
+          {
+            "japanese": "サラダ",
+            "furigana": "サラダ",
+            "romanization": "Sarada",
+            "chinese": "沙拉"
+          },
+          {
+            "japanese": "シャツ",
+            "furigana": "シャツ",
+            "romanization": "Shatsu",
+            "chinese": "襯衫"
+          },
+          {
+            "japanese": "スポーツ",
+            "furigana": "スポーツ",
+            "romanization": "Supōtsu",
+            "chinese": "運動的"
+          },
+          {
+            "japanese": "セーター",
+            "furigana": "セーター",
+            "romanization": "Sētā",
+            "chinese": "毛衣"
+          },
+          {
+            "japanese": "ソファ",
+            "furigana": "ソファ",
+            "romanization": "Sofa",
+            "chinese": "沙發"
+          },
+          {
+            "japanese": "タクシー",
+            "furigana": "タクシー",
+            "romanization": "Takushī",
+            "chinese": "計程車"
+          },
+          {
+            "japanese": "チーズ",
+            "furigana": "チーズ",
+            "romanization": "Chīzu",
+            "chinese": "起司"
+          },
+          {
+            "japanese": "ツアー",
+            "furigana": "ツアー",
+            "romanization": "Tsuā",
+            "chinese": "旅遊"
+          },
+          {
+            "japanese": "テレビ",
+            "furigana": "テレビ",
+            "romanization": "Terebi",
+            "chinese": "電視機"
+          },
+          {
+            "japanese": "トマト",
+            "furigana": "トマト",
+            "romanization": "Tomato",
+            "chinese": "番茄"
+          },
+          {
+            "japanese": "ナイフ",
+            "furigana": "ナイフ",
+            "romanization": "Naifu",
+            "chinese": "刀"
+          },
+          {
+            "japanese": "ニュース",
+            "furigana": "ニュース",
+            "romanization": "Nyūsu",
+            "chinese": "消息"
+          },
+          {
+            "japanese": "ヌードル",
+            "furigana": "ヌードル",
+            "romanization": "Nūdoru",
+            "chinese": "麵條"
+          },
+          {
+            "japanese": "ネクタイ",
+            "furigana": "ネクタイ",
+            "romanization": "Nekutai",
+            "chinese": "領帶"
+          },
+          {
+            "japanese": "ノート",
+            "furigana": "ノート",
+            "romanization": "Nōto",
+            "chinese": "筆記"
+          },
+          {
+            "japanese": "ハンバーガー",
+            "furigana": "ハンバーガー",
+            "romanization": "Hanbāgā",
+            "chinese": "漢堡"
+          },
+          {
+            "japanese": "ヒーロー",
+            "furigana": "ヒーロー",
+            "romanization": "Hīrō",
+            "chinese": "英雄"
+          },
+          {
+            "japanese": "フォーク",
+            "furigana": "フォーク",
+            "romanization": "Fōku",
+            "chinese": "叉"
+          },
+          {
+            "japanese": "ヘリコプター",
+            "furigana": "ヘリコプター",
+            "romanization": "Herikoputā",
+            "chinese": "直升機"
+          },
+          {
+            "japanese": "ホテル",
+            "furigana": "ホテル",
+            "romanization": "Hoteru",
+            "chinese": "飯店"
+          },
+          {
+            "japanese": "マスク",
+            "furigana": "マスク",
+            "romanization": "Masuku",
+            "chinese": "面具"
+          },
+          {
+            "japanese": "ミルク",
+            "furigana": "ミルク",
+            "romanization": "Miruku",
+            "chinese": "牛奶"
+          },
+          {
+            "japanese": "ムービー",
+            "furigana": "ムービー",
+            "romanization": "Mūbī",
+            "chinese": "電影"
+          },
+          {
+            "japanese": "メニュー",
+            "furigana": "メニュー",
+            "romanization": "Menyū",
+            "chinese": "菜單"
+          },
+          {
+            "japanese": "モデル",
+            "furigana": "モデル",
+            "romanization": "Moderu",
+            "chinese": "模型"
+          },
+          {
+            "japanese": "ヤード",
+            "furigana": "ヤード",
+            "romanization": "Yādo",
+            "chinese": "院子"
+          },
+          {
+            "japanese": "ユニフォーム",
+            "furigana": "ユニフォーム",
+            "romanization": "Yunifōmu",
+            "chinese": "制服"
+          },
+          {
+            "japanese": "ヨット",
+            "furigana": "ヨット",
+            "romanization": "Yotto",
+            "chinese": "遊艇"
+          },
+          {
+            "japanese": "ラジオ",
+            "furigana": "ラジオ",
+            "romanization": "Rajio",
+            "chinese": "收音機"
+          },
+          {
+            "japanese": "リンゴ",
+            "furigana": "リンゴ",
+            "romanization": "Ringo",
+            "chinese": "蘋果"
+          },
+          {
+            "japanese": "ルール",
+            "furigana": "ルール",
+            "romanization": "Rūru",
+            "chinese": "規則"
+          },
+          {
+            "japanese": "レストラン",
+            "furigana": "レストラン",
+            "romanization": "Resutoran",
+            "chinese": "餐廳"
+          },
+          {
+            "japanese": "ロボット",
+            "furigana": "ロボット",
+            "romanization": "Robotto",
+            "chinese": "機器人"
+          },
+          {
+            "japanese": "ワイン",
+            "furigana": "ワイン",
+            "romanization": "Wain",
+            "chinese": "葡萄酒"
+          },
+          {
+            "japanese": "ヲタク",
+            "furigana": "ヲタク",
+            "romanization": "Wotaku",
+            "chinese": "禦宅族"
+          },
+          {
+            "japanese": "パン",
+            "furigana": "パン",
+            "romanization": "Pan",
+            "chinese": "麵包"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "1770818432554bwdm9f9ukg8",
+    "title": "日语绕口令",
+    "originalFileName": "日语绕口令.txt",
+    "pageCount": 1,
+    "fileSize": 635,
+    "convertedAt": "2026-02-11T14:00:32.554Z",
+    "tags": [],
+    "notes": "",
+    "savedToServer": false,
+    "pages": [
+      {
+        "pageNumber": 1,
+        "title": "生麦生米生卵",
+        "imageData": null,
+        "textLines": [
+          {
+            "japanese": "生麦生米生卵",
+            "furigana": "生麦生米生卵",
+            "romanization": "Namamugi nama kome namatamago",
+            "chinese": "生小麥 生米 生雞蛋"
+          },
+          {
+            "japanese": "隣の客はよく柿食う客だ",
+            "furigana": "隣の客はよく柿食う客だ",
+            "romanization": "Tonarinokyakuhayokukakikuukyakuda",
+            "chinese": "我旁邊的顧客經常吃柿子。"
+          },
+          {
+            "japanese": "坊主が屏風に上手に坊主の絵を描いた",
+            "furigana": "坊主が屏風に上手に坊主の絵を描いた",
+            "romanization": "Bōsugabyōbunijōzunibōzunoewokaita",
+            "chinese": "和尚熟練地在屏風上畫了一幅和尚圖。"
+          },
+          {
+            "japanese": "赤巻紙青巻紙黄巻紙",
+            "furigana": "赤巻紙青巻紙黄巻紙",
+            "romanization": "Akamakigamiaomakigamikimakigami",
+            "chinese": "紅色捲紙 藍色捲紙 黃色捲紙"
+          },
+          {
+            "japanese": "東京特許許可局",
+            "furigana": "東京特許許可局",
+            "romanization": "Tōkyōtokkyokyokakyoku",
+            "chinese": "東京專利許可事務所"
+          },
+          {
+            "japanese": "裏庭には二羽、庭には二羽鶏がいる",
+            "furigana": "裏庭には二羽、庭には二羽鶏がいる",
+            "romanization": "Ura niwanihaniwa, niwanihaniwaniwatorigairu",
+            "chinese": "後院有兩隻雞，花園裡有兩隻雞。"
+          },
+          {
+            "japanese": "この竹垣に竹立てかけたのは",
+            "furigana": "この竹垣に竹立てかけたのは",
+            "romanization": "Kono Takegaki ni take tatekaketa no wa",
+            "chinese": "靠在這個竹柵欄上的竹子是"
+          },
+          {
+            "japanese": "老若男女",
+            "furigana": "老若男女",
+            "romanization": "Rōnyakunan'nyo",
+            "chinese": "年輕人和老年人"
+          },
+          {
+            "japanese": "貨客船と旅客機",
+            "furigana": "貨客船と旅客機",
+            "romanization": "Kakyakusen to ryokakuki",
+            "chinese": "貨客船和客機"
+          },
+          {
+            "japanese": "旅客機の旅客",
+            "furigana": "旅客機の旅客",
+            "romanization": "Ryokakuki no ryokaku",
+            "chinese": "客機乘客"
+          },
+          {
+            "japanese": "親亀子亀孫亀",
+            "furigana": "親亀子亀孫亀",
+            "romanization": "Shin Kameko Hisashi Son Hisashi",
+            "chinese": "親龜 子龜 孫龜"
+          },
+          {
+            "japanese": "李も桃も桃のうち",
+            "furigana": "李も桃も桃のうち",
+            "romanization": "Ri mo momo mo momo no uchi",
+            "chinese": "李、桃和桃內"
+          },
+          {
+            "japanese": "右耳にミニニキビ",
+            "furigana": "右耳にミニニキビ",
+            "romanization": "Migimimi ni mininikibi",
+            "chinese": "右耳上長了一個小疙瘩"
+          },
+          {
+            "japanese": "バスガス爆発",
+            "furigana": "バスガス爆発",
+            "romanization": "Basugasubakuhatsu",
+            "chinese": "公交車煤氣爆炸"
+          },
+          {
+            "japanese": "肩固かったから買った肩たたき機",
+            "furigana": "肩固かったから買った肩たたき機",
+            "romanization": "Kata katakattakara katta kata-tataki-ki",
+            "chinese": "因為肩膀僵硬，我買了一台拍肩機。"
+          },
+          {
+            "japanese": "魔術師手術中",
+            "furigana": "魔術師手術中",
+            "romanization": "",
+            "chinese": "魔術師手術中"
+          },
+          {
+            "japanese": "新進シャンソン歌手総出演新春シャンソンショー",
+            "furigana": "新進シャンソン歌手総出演新春シャンソンショー",
+            "romanization": "Shinshin shanson kashu sō shutsuen shinshun shansonshō",
+            "chinese": "新年香頌秀由所有嶄露頭角的香頌歌手主演"
+          },
+          {
+            "japanese": "専売特許許可局",
+            "furigana": "専売特許許可局",
+            "romanization": "Senbai tokkyo kyoka-kyoku",
+            "chinese": "專有專利許可辦公室"
+          },
+          {
+            "japanese": "打者走者勝者走者一掃",
+            "furigana": "打者走者勝者走者一掃",
+            "romanization": "Dasha sōsha shōsha sōsha issō",
+            "chinese": "擊球手、跑壘員、獲勝者、跑壘員被淘汰"
+          },
+          {
+            "japanese": "貴社の記者が汽車で帰社した",
+            "furigana": "貴社の記者が汽車で帰社した",
+            "romanization": "Kishanokishagakishadekishashita",
+            "chinese": "貴公司記者乘火車回國。"
+          },
+          {
+            "japanese": "除雪車除雪作業中",
+            "furigana": "除雪車除雪作業中",
+            "romanization": "Josetsu-sha josetsu sagyō-chū",
+            "chinese": "除雪作業期間的掃雪機"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "1770817359750zjr9dakqp1",
+    "title": "citypop",
+    "originalFileName": "citypop.txt",
+    "pageCount": 1,
+    "fileSize": 785,
+    "convertedAt": "2026-02-11T13:42:39.750Z",
+    "tags": [],
+    "notes": "",
+    "savedToServer": false,
+    "pages": [
+      {
+        "pageNumber": 1,
+        "title": "星屑の囁き",
+        "imageData": null,
+        "textLines": [
+          {
+            "japanese": "星屑の囁き",
+            "furigana": "星屑の囁き",
+            "romanization": "Hoshikuzu no sasayaki",
+            "chinese": "星塵的低語"
+          },
+          {
+            "japanese": "星のダンス",
+            "furigana": "星のダンス",
+            "romanization": "Hoshi no dansu",
+            "chinese": "星舞"
+          },
+          {
+            "japanese": "心のメロディー",
+            "furigana": "心のメロディー",
+            "romanization": "Kokoro no merodī",
+            "chinese": "心的旋律"
+          },
+          {
+            "japanese": "懐かしい夜の夢",
+            "furigana": "懐かしい夜の夢",
+            "romanization": "Natsukashī yoru no yume",
+            "chinese": "懷舊的夜夢"
+          },
+          {
+            "japanese": "夜空のミステリー",
+            "furigana": "夜空のミステリー",
+            "romanization": "Yozora no misuterī",
+            "chinese": "夜空之謎"
+          },
+          {
+            "japanese": "夢の蜃気楼",
+            "furigana": "夢の蜃気楼",
+            "romanization": "Yume no shinkirō",
+            "chinese": "夢中的海市蜃樓"
+          },
+          {
+            "japanese": "夜のカーテン",
+            "furigana": "夜のカーテン",
+            "romanization": "Yoru no kāten",
+            "chinese": "夜幕"
+          },
+          {
+            "japanese": "愛の蜃気楼",
+            "furigana": "愛の蜃気楼",
+            "romanization": "Ai no shinkirō",
+            "chinese": "愛的海市蜃樓"
+          },
+          {
+            "japanese": "夜明けのダンス",
+            "furigana": "夜明けのダンス",
+            "romanization": "Yoake no dansu",
+            "chinese": "黎明之舞"
+          },
+          {
+            "japanese": "夢を追いかける",
+            "furigana": "夢を追いかける",
+            "romanization": "Yume o oikakeru",
+            "chinese": "追逐夢想"
+          },
+          {
+            "japanese": "夜の秘密",
+            "furigana": "夜の秘密",
+            "romanization": "Yoru no himitsu",
+            "chinese": "夜晚的秘密"
+          },
+          {
+            "japanese": "心のダンス",
+            "furigana": "心のダンス",
+            "romanization": "Kokoro no dansu",
+            "chinese": "心之舞"
+          },
+          {
+            "japanese": "都会の蜃気楼",
+            "furigana": "都会の蜃気楼",
+            "romanization": "Tokai no shinkirō",
+            "chinese": "城市海市蜃樓"
+          },
+          {
+            "japanese": "夢の中のステップ",
+            "furigana": "夢の中のステップ",
+            "romanization": "Yume no naka no suteppu",
+            "chinese": "夢中的腳步"
+          },
+          {
+            "japanese": "愛の瞬間",
+            "furigana": "愛の瞬間",
+            "romanization": "Ai no shunkan",
+            "chinese": "愛的時刻"
+          },
+          {
+            "japanese": "私の心拍のリズム",
+            "furigana": "私の心拍のリズム",
+            "romanization": "Watashi no shinpaku no rizumu",
+            "chinese": "我心跳的節奏"
+          },
+          {
+            "japanese": "夜のミラージュ",
+            "furigana": "夜のミラージュ",
+            "romanization": "Yoru no mirāju",
+            "chinese": "夜晚的海市蜃樓"
+          },
+          {
+            "japanese": "夜の海に消えて",
+            "furigana": "夜の海に消えて",
+            "romanization": "Yoru no umi ni kiete",
+            "chinese": "消失在夜海裡"
+          },
+          {
+            "japanese": "夜の夢の中で",
+            "furigana": "夜の夢の中で",
+            "romanization": "Yoru no yumenonakade",
+            "chinese": "在夜夢中"
+          },
+          {
+            "japanese": "星空のワルツ",
+            "furigana": "星空のワルツ",
+            "romanization": "Hoshizora no warutsu",
+            "chinese": "星空華爾茲"
+          },
+          {
+            "japanese": "夜明けの記憶",
+            "furigana": "夜明けの記憶",
+            "romanization": "Yoake no kioku",
+            "chinese": "黎明的記憶"
+          },
+          {
+            "japanese": "夢のささやき",
+            "furigana": "夢のささやき",
+            "romanization": "Yume no sasayaki",
+            "chinese": "夢想的低語"
+          },
+          {
+            "japanese": "恋のリフレイン",
+            "furigana": "恋のリフレイン",
+            "romanization": "Koi no rifurein",
+            "chinese": "克制愛"
+          },
+          {
+            "japanese": "夜空に舞う夢",
+            "furigana": "夜空に舞う夢",
+            "romanization": "Yozora ni mau yume",
+            "chinese": "夢在夜空中翩翩起舞"
+          },
+          {
+            "japanese": "星降る夜に",
+            "furigana": "星降る夜に",
+            "romanization": "Hoshifuruyoru ni",
+            "chinese": "在一個繁星點點的夜晚"
+          },
+          {
+            "japanese": "都会の蜃気楼",
+            "furigana": "都会の蜃気楼",
+            "romanization": "Tokai no shinkirō",
+            "chinese": "城市海市蜃樓"
+          },
+          {
+            "japanese": "揺れる心",
+            "furigana": "揺れる心",
+            "romanization": "Yureru kokoro",
+            "chinese": "一顆搖曳的心"
+          },
+          {
+            "japanese": "愛の影",
+            "furigana": "愛の影",
+            "romanization": "Ai no kage",
+            "chinese": "愛的影子"
+          },
+          {
+            "japanese": "都会の追憶",
+            "furigana": "都会の追憶",
+            "romanization": "Tokai no tsuioku",
+            "chinese": "這座城市的記憶"
+          },
+          {
+            "japanese": "私たちの物語",
+            "furigana": "私たちの物語",
+            "romanization": "Watashitachi no monogatari",
+            "chinese": "我們的故事"
+          },
+          {
+            "japanese": "君の街の風景",
+            "furigana": "君の街の風景",
+            "romanization": "Kimi no machi no fūkei",
+            "chinese": "你的城市風景"
+          },
+          {
+            "japanese": "星降る夜に",
+            "furigana": "星降る夜に",
+            "romanization": "Hoshifuruyoru ni",
+            "chinese": "在一個繁星點點的夜晚"
+          },
+          {
+            "japanese": "夜の秘密",
+            "furigana": "夜の秘密",
+            "romanization": "Yoru no himitsu",
+            "chinese": "夜晚的秘密"
+          },
+          {
+            "japanese": "君の影のダンス",
+            "furigana": "君の影のダンス",
+            "romanization": "Kimi no kage no dansu",
+            "chinese": "你的影子的舞蹈"
+          },
+          {
+            "japanese": "愛のパズル",
+            "furigana": "愛のパズル",
+            "romanization": "Ai no pazuru",
+            "chinese": "愛情拼圖"
+          },
+          {
+            "japanese": "夢のような蜃気楼",
+            "furigana": "夢のような蜃気楼",
+            "romanization": "Yume no yōna shinkirō",
+            "chinese": "夢幻般的海市蜃樓"
+          },
+          {
+            "japanese": "夜空のメロディー",
+            "furigana": "夜空のメロディー",
+            "romanization": "Yozora no merodī",
+            "chinese": "夜空的旋律"
+          },
+          {
+            "japanese": "恋の影",
+            "furigana": "恋の影",
+            "romanization": "Koi no kage",
+            "chinese": "愛的影子"
+          },
+          {
+            "japanese": "未来を追いかけて",
+            "furigana": "未来を追いかけて",
+            "romanization": "Mirai o oikakete",
+            "chinese": "追逐未來"
+          },
+          {
+            "japanese": "永遠のメロディー",
+            "furigana": "永遠のメロディー",
+            "romanization": "Eien no merodī",
+            "chinese": "永恆的旋律"
+          },
+          {
+            "japanese": "私たち二人だけ",
+            "furigana": "私たち二人だけ",
+            "romanization": "Watashitachi futaridake",
+            "chinese": "只有我們兩個人"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "17670186776207i6x9b17blc",
     "title": "phrases",
     "originalFileName": "phrases.txt",
